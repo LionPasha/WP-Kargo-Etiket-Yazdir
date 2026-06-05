@@ -140,7 +140,7 @@ class KE_Settings {
 
     public static function render_payment_mode_field() {
         $mode   = get_option( 'ke_payment_mode', 'auto' );
-        $manual = esc_attr( get_option( 'ke_payment_manual_text', 'Gönderici Ödemeli' ) );
+        $manual = get_option( 'ke_payment_manual_text', 'Gönderici Ödemeli' );
         ?>
         <fieldset>
             <label>
@@ -154,7 +154,7 @@ class KE_Settings {
                 <?php esc_html_e( 'Sabit metin kullan:', 'kargo-etiketi' ); ?>
             </label>
             <input type="text" name="ke_payment_manual_text" id="ke_payment_manual_text"
-                   value="<?php echo $manual; ?>"
+                   value="<?php echo esc_attr( $manual ); ?>"
                    class="regular-text" style="margin-left:8px;"
                    data-ke-preview="payment-type"
                    <?php echo 'auto' === $mode ? 'disabled' : ''; ?> />
@@ -185,11 +185,6 @@ class KE_Settings {
                 <?php esc_html_e( 'Varsayılan kapalıdır. Aktif ettiğinizde her etiket yazdırma işleminde sipariş durumu otomatik değişir.', 'kargo-etiketi' ); ?>
             </p>
         </fieldset>
-        <script>
-        document.getElementById('ke_auto_status').addEventListener('change', function(){
-            document.getElementById('ke_auto_status_value').disabled = !this.checked;
-        });
-        </script>
         <?php
     }
 

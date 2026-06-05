@@ -102,7 +102,7 @@ class KE_Admin {
     }
 
     private static function render_column_content( $order ) {
-        $printed_at = $order->get_meta( '_ke_printed_at' );
+        $printed_at = (int) $order->get_meta( '_ke_printed_at' );
         $print_url  = KE_Label::get_print_url( $order->get_id() );
 
         echo '<div class="ke-col-wrap">';
@@ -191,7 +191,7 @@ class KE_Admin {
         }
 
         $url        = KE_Label::get_print_url( $order->get_id() );
-        $printed_at = $order->get_meta( '_ke_printed_at' );
+        $printed_at = (int) $order->get_meta( '_ke_printed_at' );
         $count      = (int) $order->get_meta( '_ke_printed_count' );
         $tracking   = $order->get_meta( '_ke_tracking_number' );
         $show_track = get_option( 'ke_show_tracking', 0 );

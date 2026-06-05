@@ -14,17 +14,23 @@ class KE_Label {
      * ?ke_print=1&order_id=X isteğini yakala ve etiketi yazdır.
      */
     public static function handle_print_request() {
+        // Sadece WordPress yönetici arayüzünde çalış
+        if ( ! is_admin() ) {
+            return;
+        }
+
         if ( ! isset( $_GET['ke_print'] ) || '1' !== $_GET['ke_print'] ) {
             return;
+        }
+
+        // Önce yetki, sonra nonce — yetkisiz kullanıcıda gereksiz nonce işlemi yapılmasın
+        if ( ! current_user_can( 'edit_shop_orders' ) ) {
+            wp_die( esc_html__( 'Bu işlem için yetkiniz yok.', 'kargo-etiketi' ) );
         }
 
         $order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
         if ( ! $order_id ) {
             wp_die( esc_html__( 'Geçersiz sipariş.', 'kargo-etiketi' ) );
-        }
-
-        if ( ! current_user_can( 'edit_shop_orders' ) ) {
-            wp_die( esc_html__( 'Bu işlem için yetkiniz yok.', 'kargo-etiketi' ) );
         }
 
         if ( ! isset( $_GET['ke_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['ke_nonce'] ) ), 'ke_print_' . $order_id ) ) {
@@ -54,15 +60,19 @@ class KE_Label {
 
         // Otomatik sipariş durumu güncelleme
         if ( get_option( 'ke_auto_status', 0 ) ) {
-            $target_status = get_option( 'ke_auto_status_value', 'wc-completed' );
-            // WC durumları "wc-" prefix'li saklanır ama set_status "processing" gibi alır
-            $target_status = str_replace( 'wc-', '', $target_status );
+            $target_status_raw = get_option( 'ke_auto_status_value', 'wc-completed' );
 
-            if ( $order->get_status() !== $target_status ) {
-                $order->update_status(
-                    $target_status,
-                    __( 'Kargo Etiketi eklentisi tarafından otomatik güncellendi (etiket yazdırıldı).', 'kargo-etiketi' )
-                );
+            // Sadece gerçek WC durumlarına izin ver (whitelist)
+            $valid_statuses = array_keys( wc_get_order_statuses() );
+            if ( in_array( $target_status_raw, $valid_statuses, true ) ) {
+                $target_status = str_replace( 'wc-', '', $target_status_raw );
+
+                if ( $order->get_status() !== $target_status ) {
+                    $order->update_status(
+                        $target_status,
+                        __( 'Kargo Etiketi eklentisi tarafından otomatik güncellendi (etiket yazdırıldı).', 'kargo-etiketi' )
+                    );
+                }
             }
         }
     }

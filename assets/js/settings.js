@@ -40,6 +40,18 @@
     } );
 
     /* ------------------------------------------------------------------
+       Otomatik durum – checkbox/select bağlantısı (inline script kaldırıldı)
+    ------------------------------------------------------------------ */
+    var $autoStatusCheck  = $( '#ke_auto_status' );
+    var $autoStatusSelect = $( '#ke_auto_status_value' );
+
+    if ( $autoStatusCheck.length ) {
+        $autoStatusCheck.on( 'change', function () {
+            $autoStatusSelect.prop( 'disabled', ! this.checked );
+        } );
+    }
+
+    /* ------------------------------------------------------------------
        Ödeme modu radyo butonları
     ------------------------------------------------------------------ */
     $( '[data-ke-payment-mode]' ).on( 'change', function () {
