@@ -84,6 +84,15 @@ add_filter( 'plugin_row_meta', function ( $links, $file ) {
     }
     $links[] = '<a href="https://wpwix.com" target="_blank">' . esc_html__( 'Gelistirici', 'kargo-etiketi' ) . '</a>';
     $links[] = '<a href="https://github.com/LionPasha/WP-Kargo-Etiket-Yazdir" target="_blank">GitHub</a>';
+
+    // "Gerekli: WooCommerce" satırı
+    $wc_url  = admin_url( 'plugin-install.php?s=woocommerce&tab=search&type=term' );
+    $links[] = sprintf(
+        '%s: <a href="%s" target="_blank">WooCommerce</a>',
+        esc_html__( 'Gerekli', 'kargo-etiketi' ),
+        esc_url( $wc_url )
+    );
+
     return $links;
 }, 10, 2 );
 
