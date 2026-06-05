@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 /**
  * Plugin Name:       Kargo Etiketi
- * Plugin URI:        https://github.com/LionPasha/WP-Kargo-Etiket-Yazd-r
- * Description:       WooCommerce siparişleri için tek tıkla profesyonel kargo etiketi oluşturur, yazdırır ve sipariş durumunu otomatik günceller.
+ * Plugin URI:        https://github.com/LionPasha/WP-Kargo-Etiket-Yazdir
+ * Description:       WooCommerce sipariÅŸleri iÃ§in tek tÄ±kla profesyonel kargo etiketi oluÅŸturur, yazdÄ±rÄ±r ve sipariÅŸ durumunu otomatik gÃ¼nceller.
  * Version:           1.1.0
- * Author:            Ahmet YÜRÜK
+ * Author:            Ahmet YÃœRÃœK
  * Author URI:        https://wpwix.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,7 +24,7 @@ define( 'KE_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'KE_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 
 /**
- * WooCommerce HPOS (Custom Order Tables) uyumluluğu.
+ * WooCommerce HPOS (Custom Order Tables) uyumluluÄŸu.
  */
 add_action( 'before_woocommerce_init', function () {
     if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
@@ -37,16 +37,16 @@ add_action( 'before_woocommerce_init', function () {
 } );
 
 /**
- * WooCommerce aktif değilse uyarı göster.
+ * WooCommerce aktif deÄŸilse uyarÄ± gÃ¶ster.
  */
 function ke_woocommerce_missing_notice() {
     echo '<div class="notice notice-error"><p>'
-        . esc_html__( 'Kargo Etiketi eklentisi için WooCommerce gereklidir.', 'kargo-etiketi' )
+        . esc_html__( 'Kargo Etiketi eklentisi iÃ§in WooCommerce gereklidir.', 'kargo-etiketi' )
         . '</p></div>';
 }
 
 /**
- * Eklentiyi başlat.
+ * Eklentiyi baÅŸlat.
  */
 function ke_init() {
     if ( ! class_exists( 'WooCommerce' ) ) {
@@ -65,7 +65,7 @@ function ke_init() {
 add_action( 'plugins_loaded', 'ke_init' );
 
 /**
- * Eklenti listesi – "Ayarlar" aksiyon linki ekle.
+ * Eklenti listesi â€“ "Ayarlar" aksiyon linki ekle.
  */
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $links ) {
     $settings = '<a href="' . esc_url( admin_url( 'admin.php?page=kargo-etiketi-settings' ) ) . '">'
@@ -76,35 +76,35 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $li
 } );
 
 /**
- * Eklenti listesi – satır meta (Geliştirici sitesi linki).
+ * Eklenti listesi â€“ satÄ±r meta (GeliÅŸtirici sitesi linki).
  */
 add_filter( 'plugin_row_meta', function ( $links, $file ) {
     if ( plugin_basename( __FILE__ ) !== $file ) {
         return $links;
     }
-    $links[] = '<a href="https://wpwix.com" target="_blank">' . esc_html__( 'Geliştirici', 'kargo-etiketi' ) . '</a>';
-    $links[] = '<a href="https://github.com/LionPasha/WP-Kargo-Etiket-Yazd-r" target="_blank">GitHub</a>';
+    $links[] = '<a href="https://wpwix.com" target="_blank">' . esc_html__( 'GeliÅŸtirici', 'kargo-etiketi' ) . '</a>';
+    $links[] = '<a href="https://github.com/LionPasha/WP-Kargo-Etiket-Yazdir" target="_blank">GitHub</a>';
     return $links;
 }, 10, 2 );
 
 /**
- * Aktivasyon kancası – WooCommerce mağaza bilgilerini varsayılan olarak yükle.
+ * Aktivasyon kancasÄ± â€“ WooCommerce maÄŸaza bilgilerini varsayÄ±lan olarak yÃ¼kle.
  */
 register_activation_hook( __FILE__, function () {
 
-    // WooCommerce mağaza adresi bileşenlerini çek
+    // WooCommerce maÄŸaza adresi bileÅŸenlerini Ã§ek
     $wc_address   = get_option( 'woocommerce_store_address', '' );
     $wc_address2  = get_option( 'woocommerce_store_address_2', '' );
     $wc_city      = get_option( 'woocommerce_store_city', '' );
     $wc_postcode  = get_option( 'woocommerce_store_postcode', '' );
     $wc_country   = get_option( 'woocommerce_default_country', '' );
 
-    // Adres satırlarını birleştir
+    // Adres satÄ±rlarÄ±nÄ± birleÅŸtir
     $full_address = trim( $wc_address . ( $wc_address2 ? "\n" . $wc_address2 : '' ) );
 
-    // İlçe/İl satırı: Şehir + Posta Kodu + Ülke kodu
+    // Ä°lÃ§e/Ä°l satÄ±rÄ±: Åehir + Posta Kodu + Ãœlke kodu
     $city_parts = array_filter( array( $wc_city, $wc_postcode ) );
-    // Ülke kodu "TR:34" formatında gelebilir, sadece ülkeyi al
+    // Ãœlke kodu "TR:34" formatÄ±nda gelebilir, sadece Ã¼lkeyi al
     $country_code = strstr( $wc_country, ':', true ) ?: $wc_country;
     if ( $country_code && 'TR' !== strtoupper( $country_code ) ) {
         $city_parts[] = $country_code;
@@ -117,7 +117,7 @@ register_activation_hook( __FILE__, function () {
         'ke_sender_city'         => $city_line,
         'ke_sender_phone'        => get_option( 'woocommerce_store_phone', '' ),
         'ke_payment_mode'        => 'auto',
-        'ke_payment_manual_text' => 'Gönderici Ödemeli',
+        'ke_payment_manual_text' => 'GÃ¶nderici Ã–demeli',
         'ke_show_products'       => 0,
         'ke_show_order_note'     => 0,
         'ke_label_size'          => 'a6',
@@ -136,3 +136,4 @@ register_activation_hook( __FILE__, function () {
         }
     }
 } );
+
