@@ -101,7 +101,7 @@ class KE_Settings {
         /* ---- BÖLÜM 4: Logo ---- */
         add_settings_section( 'ke_logo_section', __( 'Firma Logosu', 'kargo-etiketi' ), null, 'kargo-etiketi-settings' );
 
-        register_setting( 'ke_settings_group', 'ke_logo_url',        array( 'sanitize_callback' => 'esc_url_raw' ) );
+        register_setting( 'ke_settings_group', 'ke_logo_url',        array( 'sanitize_callback' => array( __CLASS__, 'sanitize_logo_url' ) ) );
         register_setting( 'ke_settings_group', 'ke_logo_show',       array( 'sanitize_callback' => 'absint' ) );
         register_setting( 'ke_settings_group', 'ke_logo_position',   array( 'sanitize_callback' => 'sanitize_text_field' ) );
         register_setting( 'ke_settings_group', 'ke_logo_max_height', array( 'sanitize_callback' => 'absint' ) );
@@ -189,65 +189,61 @@ class KE_Settings {
     }
 
     public static function render_logo_field() {
-        $url      = get_option( 'ke_logo_url', '' );
+        $url           = get_option( 'ke_logo_url', '' );
         $site_logo_url = self::get_site_logo_url();
         ?>
-        <div class="ke-logo-upload-wrap">
-            <!-- Önizleme kutusu -->
-            <div class="ke-logo-current <?php echo $url ? '' : 'ke-logo-empty'; ?>" id="ke-logo-preview-wrap">
-                <span id="ke-logo-placeholder" <?php echo $url ? 'style="display:none"' : ''; ?>>
-                    <?php esc_html_e( 'Logo seçilmedi', 'kargo-etiketi' ); ?>
-                </span>
-                <img id="ke-logo-preview-img"
-                     src="<?php echo esc_url( $url ); ?>"
-                     alt=""
-                     <?php echo $url ? '' : 'style="display:none"'; ?> />
-            </div>
 
-            <input type="hidden" id="ke_logo_url" name="ke_logo_url"
-                   value="<?php echo esc_attr( $url ); ?>" />
+        <!-- Önizleme kutusu -->
+        <div class="ke-logo-current <?php echo $url ? '' : 'ke-logo-empty'; ?>" id="ke-logo-preview-wrap" style="margin-bottom:8px;">
+            <span id="ke-logo-placeholder" <?php echo $url ? 'style="display:none"' : ''; ?>>
+                <?php esc_html_e( 'Logo seçilmedi', 'kargo-etiketi' ); ?>
+            </span>
+            <img id="ke-logo-preview-img"
+                 src="<?php echo esc_url( $url ); ?>"
+                 alt=""
+                 <?php echo $url ? '' : 'style="display:none"'; ?> />
+        </div>
+
+        <!-- URL alanı — her zaman görünür, form'a dahil, kayıt garantili -->
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;">
+            <input type="text"
+                   id="ke_logo_url"
+                   name="ke_logo_url"
+                   value="<?php echo esc_attr( $url ); ?>"
+                   class="large-text ke-logo-url-field"
+                   placeholder="<?php esc_attr_e( 'Logo URL\'si (https://…)', 'kargo-etiketi' ); ?>"
+                   style="font-size:12px;" />
+            <button type="button" class="button" id="ke-logo-preview-btn">
+                <?php esc_html_e( 'Önizle', 'kargo-etiketi' ); ?>
+            </button>
         </div>
 
         <!-- Butonlar -->
         <div class="ke-logo-btn-group">
-            <!-- 1. Medya kütüphanesinden seç -->
             <button type="button" class="button" id="ke-logo-upload-btn">
                 📁 <?php esc_html_e( 'Medya Kütüphanesinden Seç', 'kargo-etiketi' ); ?>
             </button>
 
-            <!-- 2. Site logosunu kullan -->
             <?php if ( $site_logo_url ) : ?>
             <button type="button" class="button" id="ke-logo-site-btn"
                     data-url="<?php echo esc_url( $site_logo_url ); ?>">
                 🌐 <?php esc_html_e( 'Site Logosunu Kullan', 'kargo-etiketi' ); ?>
             </button>
             <?php else : ?>
-            <button type="button" class="button" disabled title="<?php esc_attr_e( 'WordPress Site Kimliği\'nde logo tanımlı değil', 'kargo-etiketi' ); ?>">
+            <button type="button" class="button" disabled
+                    title="<?php esc_attr_e( 'WordPress Site Kimliği\'nde logo tanımlı değil', 'kargo-etiketi' ); ?>">
                 🌐 <?php esc_html_e( 'Site Logosunu Kullan', 'kargo-etiketi' ); ?>
             </button>
             <?php endif; ?>
 
-            <!-- 3. Kaldır -->
             <button type="button" class="button ke-logo-remove-btn" id="ke-logo-remove-btn"
                     <?php echo $url ? '' : 'style="display:none"'; ?>>
                 ✕ <?php esc_html_e( 'Logoyu Kaldır', 'kargo-etiketi' ); ?>
             </button>
         </div>
 
-        <!-- 4. URL ile ekle -->
-        <div class="ke-logo-url-wrap" style="margin-top:8px;display:flex;gap:6px;align-items:center;">
-            <input type="url"
-                   id="ke-logo-url-input"
-                   placeholder="<?php esc_attr_e( 'veya buraya logo URL\'si yapıştırın…', 'kargo-etiketi' ); ?>"
-                   class="regular-text"
-                   style="font-size:12px;" />
-            <button type="button" class="button" id="ke-logo-url-btn">
-                <?php esc_html_e( 'Uygula', 'kargo-etiketi' ); ?>
-            </button>
-        </div>
-
         <p class="description" style="margin-top:6px;">
-            <?php esc_html_e( 'PNG, JPG veya SVG desteklenir. Şeffaf arka plan için PNG önerilir.', 'kargo-etiketi' ); ?>
+            <?php esc_html_e( 'URL\'yi doğrudan yazabilir, Medya Kütüphanesinden seçebilir veya siteye kayıtlı logoyu kullanabilirsiniz. Kaydetmeden önce "Önizle" ile kontrol edin.', 'kargo-etiketi' ); ?>
         </p>
         <?php
     }
@@ -255,6 +251,22 @@ class KE_Settings {
     /**
      * WordPress site kimliği logosunun URL'sini döndürür.
      */
+    /**
+     * Logo URL sanitize — http/https geçerliyse olduğu gibi sakla,
+     * değilse boş string döndür.
+     */
+    public static function sanitize_logo_url( $value ) {
+        $value = trim( $value );
+        if ( '' === $value ) {
+            return '';
+        }
+        // Geçerli http/https URL değilse temizle
+        if ( ! preg_match( '#^https?://#i', $value ) ) {
+            return '';
+        }
+        return esc_url_raw( $value );
+    }
+
     public static function get_site_logo_url() {
         // Önce WordPress tema logosunu dene (Özelleştirici → Site Kimliği)
         $logo_id = get_theme_mod( 'custom_logo' );

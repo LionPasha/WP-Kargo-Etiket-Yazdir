@@ -118,12 +118,7 @@
 
     $( document ).on( 'click', '#ke-logo-remove-btn', function ( e ) {
         e.preventDefault();
-        $( '#ke_logo_url' ).val( '' );
-        $( '#ke-logo-preview-img' ).attr( 'src', '' ).hide();
-        $( '#ke-logo-placeholder' ).show();
-        $( '#ke-logo-preview-wrap' ).addClass( 'ke-logo-empty' );
-        $( '#prev-logo-section' ).hide();
-        $( this ).hide();
+        applyLogoUrl( '' );
     } );
 
     /* ------------------------------------------------------------------
@@ -138,39 +133,46 @@
     } );
 
     /* ------------------------------------------------------------------
-       URL ile logo ekle
+       Önizle butonu – URL alanındaki değeri önizlemeye yansıt
     ------------------------------------------------------------------ */
-    $( document ).on( 'click', '#ke-logo-url-btn', function ( e ) {
+    $( document ).on( 'click', '#ke-logo-preview-btn', function ( e ) {
         e.preventDefault();
-        var url = $( '#ke-logo-url-input' ).val().trim();
-        if ( url ) {
-            applyLogoUrl( url );
-            $( '#ke-logo-url-input' ).val( '' );
-        }
+        var url = $( '#ke_logo_url' ).val().trim();
+        applyLogoUrl( url );
     } );
 
-    // Enter tuşu ile de çalışsın
-    $( document ).on( 'keydown', '#ke-logo-url-input', function ( e ) {
-        if ( e.key === 'Enter' ) {
-            e.preventDefault();
-            $( '#ke-logo-url-btn' ).trigger( 'click' );
-        }
+    // URL alanından ayrılınca da önizlemeyi güncelle
+    $( document ).on( 'blur', '#ke_logo_url.ke-logo-url-field', function () {
+        applyLogoUrl( $( this ).val().trim() );
     } );
 
     /**
-     * Verilen URL'yi logo olarak uygula (önizleme + hidden input).
+     * Verilen URL'yi logo olarak uygula:
+     * — görünür text input'a yazar (form'a dahil → otomatik kayıt)
+     * — küçük önizleme kutusunu günceller
+     * — canlı etiket önizlemesini günceller
      */
     function applyLogoUrl( url ) {
         $( '#ke_logo_url' ).val( url );
-        $( '#ke-logo-preview-wrap' ).removeClass( 'ke-logo-empty' );
-        $( '#ke-logo-placeholder' ).hide();
-        $( '#ke-logo-preview-img' ).attr( 'src', url ).show();
-        $( '#ke-logo-remove-btn' ).show();
 
-        // Etiket önizlemesi
+        if ( url ) {
+            $( '#ke-logo-preview-wrap' ).removeClass( 'ke-logo-empty' );
+            $( '#ke-logo-placeholder' ).hide();
+            $( '#ke-logo-preview-img' ).attr( 'src', url ).show();
+            $( '#ke-logo-remove-btn' ).show();
+        } else {
+            $( '#ke-logo-preview-wrap' ).addClass( 'ke-logo-empty' );
+            $( '#ke-logo-placeholder' ).show();
+            $( '#ke-logo-preview-img' ).attr( 'src', '' ).hide();
+            $( '#ke-logo-remove-btn' ).hide();
+        }
+
+        // Canlı etiket önizlemesi
         $( '#prev-logo-img' ).attr( 'src', url );
-        if ( $( '#ke_logo_show' ).is( ':checked' ) ) {
+        if ( url && $( '#ke_logo_show' ).is( ':checked' ) ) {
             $( '#prev-logo-section' ).show();
+        } else {
+            $( '#prev-logo-section' ).hide();
         }
     }
 
@@ -209,6 +211,12 @@
 
     $( document ).ready( function () {
         handleBulkPrint();
+
+        // Sayfa yüklenince mevcut logo URL'sini önizlemeye yansıt
+        var existingUrl = $( '#ke_logo_url' ).val().trim();
+        if ( existingUrl ) {
+            applyLogoUrl( existingUrl );
+        }
     } );
 
 }( jQuery ) );
