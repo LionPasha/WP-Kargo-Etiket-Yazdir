@@ -1,0 +1,212 @@
+/* ================================================================
+   Kargo Etiketi – Baskı + Ekran Stilleri
+   Geliştirici: Ahmet YÜRÜK
+================================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', 'Helvetica Neue', sans-serif;
+    font-size: 13px;
+    color: #111;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ----------------------------------------------------------------
+   Etiket Kartı
+---------------------------------------------------------------- */
+.ke-label-wrapper {
+    background: #fff;
+    border: 2px solid #222;
+    width: 100%;
+    max-width: 420px;
+    padding: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+}
+
+/* ----------------------------------------------------------------
+   Logo
+---------------------------------------------------------------- */
+.ke-logo-section {
+    padding: 12px 14px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+}
+
+.ke-logo-left   { justify-content: flex-start; }
+.ke-logo-center { justify-content: center; }
+.ke-logo-right  { justify-content: flex-end; }
+
+.ke-logo-section img {
+    display: block;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ----------------------------------------------------------------
+   Bölümler
+---------------------------------------------------------------- */
+.ke-section {
+    border-bottom: 2px solid #222;
+    padding: 12px 14px;
+}
+
+.ke-section:last-of-type {
+    border-bottom: none;
+}
+
+.ke-section-title {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .07em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    color: #111;
+}
+
+.ke-section-recipient .ke-section-title {
+    font-size: 13px;
+}
+
+/* ----------------------------------------------------------------
+   Bilgi tablosu
+---------------------------------------------------------------- */
+.ke-info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ke-info-table tr + tr td {
+    padding-top: 3px;
+}
+
+.ke-label-cell {
+    font-weight: 700;
+    white-space: nowrap;
+    padding-right: 8px;
+    vertical-align: top;
+    width: 100px;
+}
+
+.ke-info-table td {
+    vertical-align: top;
+    line-height: 1.45;
+}
+
+/* ----------------------------------------------------------------
+   Ürünler bölümü
+---------------------------------------------------------------- */
+.ke-products-table td {
+    padding-top: 2px !important;
+    font-size: 12px;
+}
+
+.ke-qty {
+    text-align: right;
+    font-weight: 700;
+    width: 36px;
+    white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------
+   Sipariş notu
+---------------------------------------------------------------- */
+.ke-note-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #333;
+    font-style: italic;
+}
+
+/* ----------------------------------------------------------------
+   Alt bilgi
+---------------------------------------------------------------- */
+.ke-footer {
+    font-size: 10px;
+    color: #666;
+    text-align: center;
+    padding: 6px 14px;
+    border-top: 1px solid #ddd;
+    background: #fafafa;
+}
+
+/* ================================================================
+   YAZICI AYARLARI
+================================================================ */
+@media print {
+    html, body {
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .ke-label-wrapper {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        /* page-break-after kaldırıldı – bazı tarayıcılarda taşan içeriği kesiyor */
+        overflow: visible !important;
+        break-inside: auto;
+    }
+
+    /* Print modunda padding küçültülür – A6'ya sığması için */
+    .ke-logo-section {
+        padding: 8px 10px 6px !important;
+    }
+
+    .ke-section {
+        padding: 8px 10px !important;
+    }
+
+    .ke-section-title {
+        font-size: 11px !important;
+        margin-bottom: 5px !important;
+    }
+
+    .ke-section-recipient .ke-section-title {
+        font-size: 12px !important;
+    }
+
+    .ke-info-table td {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+    }
+
+    .ke-info-table tr + tr td {
+        padding-top: 2px !important;
+    }
+
+    .ke-label-cell {
+        width: 88px !important;
+    }
+
+    .ke-products-table td {
+        font-size: 11px !important;
+        padding-top: 1px !important;
+    }
+
+    .ke-note-text {
+        font-size: 11px !important;
+    }
+
+    .ke-footer {
+        display: none !important;
+    }
+}
+
+/* Sayfa boyutu @page etikette inline style ile override edilir */
