@@ -167,6 +167,14 @@ body {
     /* Print modunda padding küçültülür – A6'ya sığması için */
     .ke-logo-section {
         padding: 8px 10px 6px !important;
+        display: flex !important;
+    }
+
+    .ke-logo-section img {
+        display: block !important;
+        max-width: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
     .ke-section {

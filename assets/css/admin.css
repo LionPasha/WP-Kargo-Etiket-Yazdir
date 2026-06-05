@@ -146,6 +146,21 @@
 /* ================================================================
    AYARLAR SAYFASI
 ================================================================ */
+
+/* Dikey gri bar düzeltmesi — preview panelinin scale taşması
+   ve wpbody padding'in neden olduğu overflow giderilir */
+body.woocommerce_page_kargo-etiketi-settings #wpbody-content,
+body.woocommerce_page_kargo-etiketi-settings #wpcontent {
+    overflow-x: hidden !important;
+    padding-left: 0 !important;
+}
+body.woocommerce_page_kargo-etiketi-settings #wpbody {
+    overflow-x: hidden !important;
+}
+body.woocommerce_page_kargo-etiketi-settings .wrap {
+    overflow-x: hidden;
+}
+
 .ke-settings-wrap h1 {
     margin-bottom: 12px;
 }

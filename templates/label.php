@@ -17,7 +17,19 @@
         @page { <?php echo esc_html( $page_size ); ?> }
     </style>
 </head>
-<body onload="window.print()">
+<body>
+<script>
+window.addEventListener('load', function () {
+    var imgs = document.querySelectorAll('img');
+    if (!imgs.length) { setTimeout(function(){ window.print(); }, 150); return; }
+    var remaining = imgs.length;
+    function tryPrint() { remaining--; if (remaining <= 0) setTimeout(function(){ window.print(); }, 150); }
+    imgs.forEach(function (img) {
+        if (img.complete) { tryPrint(); }
+        else { img.addEventListener('load', tryPrint); img.addEventListener('error', tryPrint); }
+    });
+});
+</script>
 
 <div class="ke-label-wrapper ke-size-<?php echo esc_attr( $data['label_size'] ); ?>">
 
